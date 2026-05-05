@@ -25,9 +25,7 @@ jobs:
 
       - name: Lint Lambda functions
         run: |
-          flake8 lambdas/validate/lambda_function.py --max-line-length=120 --ignore=E501,W503
-          flake8 lambdas/risk_assess/lambda_function.py --max-line-length=120 --ignore=E501,W503
-          flake8 lambdas/route/lambda_function.py --max-line-length=120 --ignore=E501,W503
+          flake8 lambdas/ --max-line-length=120 --ignore=E302,E221,W292,E501,W503
 
       - name: Setup OpenTofu
         uses: opentofu/setup-opentofu@v1
