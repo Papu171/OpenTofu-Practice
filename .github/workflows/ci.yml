@@ -1,0 +1,51 @@
+﻿name: CI/CD Banking Transaction Processor
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: Validate & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python linter
+        run: pip install flake8
+
+      - name: Lint Lambda functions
+        run: |
+          flake8 lambdas/validate/lambda_function.py --max-line-length=120
+          flake8 lambdas/risk_assess/lambda_function.py --max-line-length=120
+          flake8 lambdas/route/lambda_function.py --max-line-length=120
+
+      - name: Setup OpenTofu
+        uses: opentofu/setup-opentofu@v1
+        with:
+          tofu_version: "1.9.1"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Tofu Init
+        run: tofu init
+
+      - name: Tofu Validate
+        run: tofu validate
+
+      - name: Tofu Plan
+        run: tofu plan
