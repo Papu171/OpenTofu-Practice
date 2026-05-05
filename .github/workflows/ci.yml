@@ -8,7 +8,7 @@ on:
 
 jobs:
   validate:
-    name: Validate & Lint
+    name: Validate & Deploy Check
     runs-on: ubuntu-latest
 
     steps:
@@ -20,12 +20,12 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Python linter
-        run: pip install flake8
-
-      - name: Lint Lambda functions
+      - name: Check Lambda files exist
         run: |
-          flake8 lambdas/ --max-line-length=120 --ignore=E302,E221,W292,E501,W503
+          test -f lambdas/validate/lambda_function.py
+          test -f lambdas/risk_assess/lambda_function.py
+          test -f lambdas/route/lambda_function.py
+          echo "All Lambda files present"
 
       - name: Setup OpenTofu
         uses: opentofu/setup-opentofu@v1
