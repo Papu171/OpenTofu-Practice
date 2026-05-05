@@ -1,0 +1,7 @@
+{
+  "transaction_id": "tx-0003",
+  "account": "4321-8765",
+  "amount": 350.00,
+  "country": "MX",
+  "merchant": "Oxxo"
+}
